@@ -1,0 +1,115 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'//kotlin拓展
+
+android {
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId "com.barnettwong.youqu"
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode rootProject.ext.android["versionCode"]
+        versionName rootProject.ext.android["versionName"]
+        testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
+        multiDexEnabled true
+
+        ndk {
+            abiFilters 'armeabi', 'armeabi-v7a'//cpu架构so包支持
+        }
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "boolean", "USE_CANARY", "true"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            //apk命名
+            android.applicationVariants.all {
+                variant ->
+                    variant.outputs.all {
+                        //这里修改apk文件名
+                        outputFileName = "youqu-v${defaultConfig.versionName}.apk"
+                    }
+            }
+        }
+
+        release {
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            buildConfigField "boolean", "USE_CANARY", "false"
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets{
+        main{
+            jniLibs.srcDirs=['libs']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //tools
+    implementation rootProject.ext.dependencies["androideventbus"]
+    //view
+    annotationProcessor(rootProject.ext.dependencies["butterknife-compiler"]) {
+        exclude module: 'support-annotations'
+    }
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'
+    implementation 'com.daimajia.numberprogressbar:library:1.4@aar'
+    //新增库
+    implementation project(':library:common')
+    //图片选择
+    implementation project(':library:photoPicker')
+    //android7.0
+    implementation project(':library:provider7')
+    //万能适配器和recyclerview
+    implementation project(':library:irecyclerview')
+    //视频播放
+    implementation 'com.github.DevlinChiu:FloatWindowPermission:1.1'
+    implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
+    implementation 'com.github.ctiao:ndkbitmap-armv7a:0.9.21'
+    implementation 'com.github.ctiao:ndkbitmap-armv5:0.9.21'
+    implementation 'com.github.ctiao:ndkbitmap-x86:0.9.21'
+    implementation 'com.github.rubensousa:gravitysnaphelper:1.5'
+    implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
+    implementation 'com.google.android.exoplayer:extension-rtmp:2.8.2'
+    implementation project(':library:dkplayer-java')
+    implementation project(':library:dkplayer-ui')
+    implementation project(':library:dkplayer-lib')
+    //启动页动画
+    implementation project(':library:openingstartanimation')
+    //图片选择
+    implementation project(':library:photoPicker')
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
+    //刷新加载
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'
+    //全局登录，退出界面动画
+    implementation 'com.github.XunMengWinter:CircularAnim:0.3.3'
+    //expandtextview
+    implementation project(':library:expandtextview')
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.flaviofaria:kenburnsview:1.0.7'
+    //浮动view
+    implementation 'com.github.florent37:diagonallayout:1.0.2'
+    implementation 'com.kyleduo.switchbutton:library:2.0.0'
+    //下雪效果
+    implementation 'com.github.jetradarmobile:android-snowfall:1.2.0'
+}
